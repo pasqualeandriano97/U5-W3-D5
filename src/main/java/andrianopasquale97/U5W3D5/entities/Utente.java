@@ -13,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -30,6 +31,13 @@ public class Utente implements UserDetails {
     private String password;
     @Enumerated(EnumType.STRING)
     private Role role;
+    @ManyToMany
+    @JoinTable(
+            name = "evento_utente",
+            joinColumns = @JoinColumn(name = "utente_id"),
+            inverseJoinColumns = @JoinColumn(name = "evento_id")
+    )
+    private Set<Evento> eventi;
 
     public Utente(String nome, String cognome, String email, String password) {
         this.nome = nome;

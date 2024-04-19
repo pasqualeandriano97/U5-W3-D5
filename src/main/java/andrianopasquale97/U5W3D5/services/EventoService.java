@@ -8,8 +8,6 @@ import andrianopasquale97.U5W3D5.exceptions.NotFoundException;
 import andrianopasquale97.U5W3D5.payloads.EventoDTO;
 import andrianopasquale97.U5W3D5.payloads.EventoRespDTO;
 import andrianopasquale97.U5W3D5.repositories.EventoDAO;
-import com.cloudinary.Cloudinary;
-import com.cloudinary.utils.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -17,9 +15,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
+
+
 
 @Service
 public class EventoService {
@@ -30,7 +28,7 @@ public class EventoService {
     private PasswordEncoder passwordEncoder;
 
     public EventoRespDTO save(EventoDTO newEvento) {
-        this.eventoDAO.findByName(newEvento.nome()).ifPresent(
+        this.eventoDAO.findByNome(newEvento.nome()).ifPresent(
                 author -> {
                     throw new BadRequestException("L'evento " + newEvento.nome() + " è già stato salvato!");
                 }
@@ -51,24 +49,24 @@ public class EventoService {
 
 
     public Evento getById(int id) {
-        return this.eventoDAO.findById(id).orElseThrow(() -> new NotFoundException("Dipendente non trovato"));
+        return this.eventoDAO.findById(id).orElseThrow(() -> new NotFoundException("Evento non trovato"));
     }
 
 
     public void findByIdAndDelete(int id) {
         Evento found = this.getById(id);
         this.eventoDAO.delete(found);
-        throw new CorrectDelete("Dipendente correttamente eliminato");
+        throw new CorrectDelete("Evento correttamente eliminato");
     }
 
-    public EventoDTO findByIdAndUpdate(int id, EventoDTO modifiedAuthor) {
+    public EventoDTO findByIdAndUpdate(int id, EventoDTO modifiedEvent) {
         Evento found = this.getById(id);
-        found.setNome(modifiedAuthor.nome());
-        found.setData(modifiedAuthor.data());
-        found.setLuogo(modifiedAuthor.data());
-        found.setDescrizione(modifiedAuthor.descrizione());
-        found.setNMaxPartecipanti(modifiedAuthor.nMaxPartecipanti());
+        found.setNome(modifiedEvent.nome());
+        found.setData(modifiedEvent.data());
+        found.setLuogo(modifiedEvent.data());
+        found.setDescrizione(modifiedEvent.descrizione());
+        found.setNMaxPartecipanti(modifiedEvent.nMaxPartecipanti());
         this.eventoDAO.save(found);
-        return modifiedAuthor;
+        return modifiedEvent;
     }
 }

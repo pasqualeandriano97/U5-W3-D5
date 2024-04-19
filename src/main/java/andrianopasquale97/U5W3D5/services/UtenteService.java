@@ -1,11 +1,13 @@
 package andrianopasquale97.U5W3D5.services;
 
+import andrianopasquale97.U5W3D5.entities.Evento;
 import andrianopasquale97.U5W3D5.entities.Utente;
 import andrianopasquale97.U5W3D5.exceptions.BadRequestException;
 import andrianopasquale97.U5W3D5.exceptions.CorrectDelete;
 import andrianopasquale97.U5W3D5.exceptions.NotFoundException;
 import andrianopasquale97.U5W3D5.payloads.UtenteDTO;
 import andrianopasquale97.U5W3D5.payloads.UtenteRespDTO;
+import andrianopasquale97.U5W3D5.repositories.EventoDAO;
 import andrianopasquale97.U5W3D5.repositories.UtenteDAO;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
@@ -19,13 +21,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Objects;
 
 @Service
 public class UtenteService {
     @Autowired
     private UtenteDAO utenteDAO;
     @Autowired
-    private Cloudinary cloudinaryService;
+    private EventoDAO eventoDAO;
+    @Autowired
+    private EventoService eventoService;
+
     @Autowired
     private PasswordEncoder passwordEncoder;
 
@@ -50,14 +56,14 @@ public class UtenteService {
 
 
     public Utente getById(int id) {
-        return this.utenteDAO.findById(id).orElseThrow(() -> new NotFoundException("Dipendente non trovato"));
+        return this.utenteDAO.findById(id).orElseThrow(() -> new NotFoundException("Utente non trovato"));
     }
 
 
     public void findByIdAndDelete(int id) {
         Utente found = this.getById(id);
         this.utenteDAO.delete(found);
-        throw new CorrectDelete("Dipendente correttamente eliminato");
+        throw new CorrectDelete("Utente correttamente eliminato");
     }
 
     public UtenteDTO findByIdAndUpdate(int id, UtenteDTO modifiedAuthor) {
@@ -71,6 +77,24 @@ public class UtenteService {
 
 
     public Utente findByEmail(String email) {
-        return this.utenteDAO.findByEmail(email).orElseThrow(() -> new NotFoundException("Dipendente non trovato"));
+        return this.utenteDAO.findByEmail(email).orElseThrow(() -> new NotFoundException("Utente non trovato"));
+    }
+    public Utente findByIdAndAddUtente(int utenteId , int eventoId) throws IOException {
+        Utente utente = this.getById(eventoId);
+        Evento evento = eventoService.getById(utenteId);
+        if (Objects.isNull(utente)) {
+            throw new NotFoundException(utenteId);
+        }
+        if (Objects.isNull(evento)) {
+            throw new NotFoundException(eventoId);
+        }
+        if (evento.getUtenti().contains(utente)) {
+            throw new BadRequestException("Utente già presente nel evento");
+        }
+        evento.getUtenti().add(utente);
+        utente.getEventi().add(evento);
+
+        eventoDAO.save(evento);
+        return utenteDAO.save(utente);
     }
 }

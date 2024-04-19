@@ -1,5 +1,6 @@
 package andrianopasquale97.U5W3D5.controllers;
 
+import andrianopasquale97.U5W3D5.entities.Evento;
 import andrianopasquale97.U5W3D5.entities.Utente;
 import andrianopasquale97.U5W3D5.payloads.UtenteDTO;
 import andrianopasquale97.U5W3D5.services.UtenteService;
@@ -59,4 +60,10 @@ public class UtenteController {
     public void deleteProfile(@AuthenticationPrincipal Utente currentAuthenticatedUser){
         this.utenteService.findByIdAndDelete(currentAuthenticatedUser.getId());
     }
+    @PostMapping("/{utenteId}/{eventoId}")
+    public Utente findByIdAndUtente(@PathVariable int utenteId, @PathVariable int eventoId) throws IOException {
+        return utenteService.findByIdAndAddUtente(utenteId, eventoId);
+    }
+
+
 }

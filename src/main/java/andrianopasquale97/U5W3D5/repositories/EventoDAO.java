@@ -7,6 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 
 public interface EventoDAO extends JpaRepository<Evento, Integer> {
-    Optional<Evento> findByName(String name);
+    Optional<Evento> findByNome(String nome);
 
 }
