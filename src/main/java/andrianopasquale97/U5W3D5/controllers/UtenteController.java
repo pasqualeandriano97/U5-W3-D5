@@ -61,9 +61,13 @@ public class UtenteController {
         this.utenteService.findByIdAndDelete(currentAuthenticatedUser.getId());
     }
     @PostMapping("/{utenteId}/{eventoId}")
+    @PreAuthorize("hasAnyAuthority('ORGANIZZATORE_EVENTO','ADMIN')")
     public Utente findByIdAndUtente(@PathVariable int utenteId, @PathVariable int eventoId) throws IOException {
         return utenteService.findByIdAndAddUtente(utenteId, eventoId);
     }
 
-
+    @PostMapping("/me/{eventoId}")
+    public Utente findMeAndUtente(@AuthenticationPrincipal Utente utente, @PathVariable int eventoId) throws IOException {
+        return utenteService.findByIdAndAddUtente( eventoId,utente.getId());
+    }
 }
