@@ -50,19 +50,19 @@ public class EventoService {
     }
 
 
-    public Evento getDipendenteById(int id) {
+    public Evento getById(int id) {
         return this.eventoDAO.findById(id).orElseThrow(() -> new NotFoundException("Dipendente non trovato"));
     }
 
 
     public void findByIdAndDelete(int id) {
-        Evento found = this.getDipendenteById(id);
+        Evento found = this.getById(id);
         this.eventoDAO.delete(found);
         throw new CorrectDelete("Dipendente correttamente eliminato");
     }
 
     public EventoDTO findByIdAndUpdate(int id, EventoDTO modifiedAuthor) {
-        Evento found = this.getDipendenteById(id);
+        Evento found = this.getById(id);
         found.setNome(modifiedAuthor.nome());
         found.setData(modifiedAuthor.data());
         found.setLuogo(modifiedAuthor.data());
