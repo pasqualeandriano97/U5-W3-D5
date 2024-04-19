@@ -90,7 +90,8 @@ public class UtenteService {
         }
         if (evento.getUtenti().contains(utente)) {
             throw new BadRequestException("Utente già presente nel evento");
-        }
+        }if(evento.getUtenti().size() >= evento.getNMaxPartecipanti()) {
+            throw new BadRequestException("Evento pieno");}
         evento.getUtenti().add(utente);
         utente.getEventi().add(evento);
 

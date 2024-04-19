@@ -2,6 +2,7 @@ package andrianopasquale97.U5W3D5.controllers;
 
 import andrianopasquale97.U5W3D5.entities.Evento;
 import andrianopasquale97.U5W3D5.entities.Utente;
+import andrianopasquale97.U5W3D5.exceptions.BadRequestException;
 import andrianopasquale97.U5W3D5.payloads.UtenteDTO;
 import andrianopasquale97.U5W3D5.services.UtenteService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -50,7 +52,10 @@ public class UtenteController {
     }
 
     @PutMapping("/me")
-    public Utente updateMe(@AuthenticationPrincipal Utente utente, @Validated @RequestBody UtenteDTO body) {
+    public Utente updateMe(@AuthenticationPrincipal Utente utente, @Validated @RequestBody UtenteDTO body, BindingResult validation) {
+        if(validation.hasErrors()) {
+            throw new BadRequestException(validation.getAllErrors());
+        }
         this.utenteService.findByIdAndUpdate(utente.getId(), body);
         return utente;
     }

@@ -3,6 +3,7 @@ package andrianopasquale97.U5W3D5.controllers;
 
 import andrianopasquale97.U5W3D5.entities.Evento;
 import andrianopasquale97.U5W3D5.entities.Utente;
+import andrianopasquale97.U5W3D5.exceptions.BadRequestException;
 import andrianopasquale97.U5W3D5.payloads.EventoDTO;
 import andrianopasquale97.U5W3D5.payloads.EventoRespDTO;
 import andrianopasquale97.U5W3D5.services.EventoService;
@@ -11,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -28,7 +31,10 @@ public class EventoController {
     @PostMapping("")
     @PreAuthorize("hasAnyAuthority('ORGANIZZATORE_EVENTI','ADMIN')")
     @ResponseStatus(HttpStatus.CREATED)
-    public EventoRespDTO saveEvento(@RequestBody EventoDTO evento) {
+    public EventoRespDTO saveEvento( @RequestBody @Validated EventoDTO evento, BindingResult validation) {
+        if(validation.hasErrors()) {
+            throw new BadRequestException(validation.getAllErrors());
+        }
         this.eventoService.save(evento);
         return new EventoRespDTO(evento.nome(), evento.data(), evento.luogo(), evento.descrizione(), evento.nMaxPartecipanti());
     }
@@ -40,7 +46,10 @@ public class EventoController {
     @PutMapping("/{eventoId}")
     @PreAuthorize("hasAnyAuthority('ORGANIZZATORE_EVENTI','ADMIN')")
     @ResponseStatus(HttpStatus.CREATED)
-    public EventoRespDTO updateEvento(@PathVariable int eventoId, @RequestBody EventoDTO evento) {
+    public EventoRespDTO updateEvento(@PathVariable int eventoId,@Validated @RequestBody EventoDTO evento, BindingResult validation) {
+        if(validation.hasErrors()) {
+            throw new BadRequestException(validation.getAllErrors());
+        }
         this.eventoService.findByIdAndUpdate(eventoId, evento);
         return new EventoRespDTO(evento.nome(), evento.data(), evento.luogo(), evento.descrizione(), evento.nMaxPartecipanti());
     }
