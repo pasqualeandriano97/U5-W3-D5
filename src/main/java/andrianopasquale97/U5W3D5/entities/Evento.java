@@ -22,4 +22,11 @@ public class Evento {
     private String descrizione;
     private int nMaxPartecipanti;
 
+    public Evento(String nome, String data, String luogo, String descrizione, int nMaxPartecipanti) {
+        this.nome = nome;
+        this.data = data;
+        this.luogo = luogo;
+        this.descrizione = descrizione;
+        this.nMaxPartecipanti = nMaxPartecipanti;
+    }
 }

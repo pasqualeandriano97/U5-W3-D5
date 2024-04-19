@@ -10,7 +10,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
+
 @Entity
 @Table(name = "Utenti")
 public class Utente {
@@ -23,4 +23,12 @@ public class Utente {
     private String password;
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    public Utente(String nome, String cognome, String email, String password) {
+        this.nome = nome;
+        this.cognome = cognome;
+        this.email = email;
+        this.password = password;
+        this.role = Role.UTENTE_NORMALE;
+    }
 }
